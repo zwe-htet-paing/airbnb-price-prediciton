@@ -1,0 +1,16 @@
+__pycache__
+.ipynb_checkpoints
+
+**/mlruns/
+**/models/
+datasets/
+
+.env
+.bin
+*.db
+
+.DB_Store
+
+*.parquet
+*.html
+*.csv
