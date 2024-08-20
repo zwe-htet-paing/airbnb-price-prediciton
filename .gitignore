@@ -2,8 +2,7 @@ __pycache__
 .ipynb_checkpoints
 
 **/mlruns/
-**/models/
-datasets/
+
 
 .env
 .bin
