@@ -1,0 +1,3 @@
+[submodule "submodule-dir"]
+    path = orchestration/mlops
+    url = https://github.com/zwe-htet-paing/mlops.git
