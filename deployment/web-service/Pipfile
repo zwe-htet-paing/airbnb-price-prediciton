@@ -4,11 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+mlflow = "*"
+jupyter = "*"
+pandas = "*"
+seaborn = "*"
+hyperopt = "*"
+xgboost = "*"
+fastparquet = "*"
+boto3 = "*"
 scikit-learn = "*"
 flask = "*"
 requests = "*"
+gunicorn = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.12"

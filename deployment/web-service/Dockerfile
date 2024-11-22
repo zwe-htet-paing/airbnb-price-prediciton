@@ -1,4 +1,4 @@
-FROM python:3.9.7-slim
+FROM python:3.12
 
 RUN pip install -U pip
 RUN pip install pipenv 
@@ -9,7 +9,7 @@ COPY [ "Pipfile", "Pipfile.lock", "./" ]
 
 RUN pipenv install --system --deploy
 
-COPY [ "predict.py", "lin_reg.bin", "./" ]
+COPY [ "predict.py", "lin_reg.bin", "preprocessor.b", "./" ]
 
 EXPOSE 9696
 
