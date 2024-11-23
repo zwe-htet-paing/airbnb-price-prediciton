@@ -3,15 +3,12 @@ import numpy as np
 
 from flask import Flask, request, jsonify
 
-with open("preprocessor.b", "rb") as f_in:
-    dv = pickle.load(f_in)
 
 with open('lin_reg.bin', 'rb') as f_in:
     model = pickle.load(f_in)
 
 def predict(features):
-    X = dv.transform(features)
-    preds = model.predict(X)
+    preds = model.predict([features])
     result = np.power(10, preds[0])
     
     return float(result)
