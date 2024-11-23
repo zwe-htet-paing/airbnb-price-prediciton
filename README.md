@@ -1,10 +1,10 @@
-# Airbnb Price Detection - MLOps Project
+# Airbnb Price Prediction - MLOps Project
 
 ## Overview
 This project is designed to practice MLOps (Machine Learning Operations) by implementing a pipeline to predict the price of Airbnb listings in New York City. The goal is to create an end-to-end solution that integrates data ingestion, model training, evaluation, and deployment while adhering to best practices in version control, automation, and monitoring.
 
 ## Dataset
-The dataset used in this project contains information about [Airbnb listings](https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data) in New York City, with the following key columns:
+The dataset used in this project contains information about [Airbnb listings](https://insideairbnb.com/get-the-data/) in New York City, with the following key columns:
 
 - id: Listing ID
 - name: Name of the listing
