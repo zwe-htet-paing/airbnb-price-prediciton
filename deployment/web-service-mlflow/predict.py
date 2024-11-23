@@ -1,5 +1,6 @@
 import os
 import pickle
+import numpy as np
 
 import mlflow
 from flask import Flask, request, jsonify
@@ -9,22 +10,23 @@ TRACKING_URL = "http://127.0.0.1:5000"
 mlflow.set_tracking_uri(TRACKING_URL)
 
 # RUN_ID = os.getenv('RUN_ID')
-RUN_ID = "cc5fcc6b69e34144acd96acd1e65396d"
+RUN_ID = "7b5744464f544451aee4a9308d1971ad"
 
-logged_model = f'runs:/{RUN_ID}/model'
+logged_model = f'runs:/{RUN_ID}/models'
 model = mlflow.pyfunc.load_model(logged_model)
 
-with open('preprocessor.b', 'rb') as f_in:
+with open("preprocessor.b", 'rb') as f_in:
     dv = pickle.load(f_in)
 
 def predict(features):
     X = dv.transform(features)
     preds = model.predict(X)
-    return float(preds[0])
+    result = np.power(10, preds[0])
+    
+    return float(result)
 
 
 app = Flask('airbna-price-prediction')
-
 
 @app.route('/predict', methods=['POST'])
 def predict_endpoint():
