@@ -5,6 +5,7 @@ import logging
 import uuid
 import pytz
 import pandas as pd
+import numpy as np
 import io
 import psycopg
 import joblib
@@ -33,28 +34,43 @@ create table dummy_metrics(
 reference_data = pd.read_parquet('data/reference.parquet')
 with open('models/lin_reg.bin', 'rb') as f_in:
 	model = joblib.load(f_in)
- 
-with open('models/preprocessor.b', 'rb') as f_in:
-    dv = joblib.load(f_in)
+
 
 def read_dataframe(filename):
     df = pd.read_csv(filename)
-    df.drop(['host_id','name','latitude','longitude','id','host_name','last_review', 'neighbourhood_group', 'license'], axis=1, inplace=True)
-    df.dropna(subset=['price'], inplace=True)
-    df.reset_index(drop=True, inplace=True)
-    df['reviews_per_month'] = df['reviews_per_month'].fillna(0)
     
-    # Feature selection
-    categorical = ['room_type', 'neighbourhood']
-    df[categorical] = df[categorical].astype(str)
+    # Handle missing values
+    df = df.dropna(subset=['price'])
+    df['reviews_per_month'] = df['reviews_per_month'].fillna(0)
+    df['last_review'] = pd.to_datetime(df['last_review'])
+    df = df.fillna(0)
+    
+    # # Apply a log10 transformation to the target column
+    # df['price'] = np.log10(df['price'])
 
     return df
 
-raw_data = read_dataframe('data/2024-06-07-listings.csv')
+def preprocess(df):
+    # Calculate IQR
+    Q1 = df['price'].quantile(0.25)  # First quartile (25th percentile)
+    Q3 = df['price'].quantile(0.75)  # Third quartile (75th percentile)
+    IQR = Q3 - Q1  # Interquartile range
+
+    # Define outlier boundaries
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    # Remove outliers
+    df = df[(df['price'] >= lower_bound) & (df['price'] <= upper_bound)].reset_index(drop=True)
+    
+    return df
+
+raw_data = read_dataframe('data/albany/2024-06-07-listings.csv')
 
 begin = datetime.datetime(2024, 6, 7, 0, 0)
-num_features = ['minimum_nights', 'number_of_reviews', 'reviews_per_month', 'calculated_host_listings_count', 'availability_365', 'number_of_reviews_ltm']
+num_features = ['latitude', 'longitude', 'minimum_nights', 'number_of_reviews', 'reviews_per_month', 'availability_365']
 cat_features = ['room_type', 'neighbourhood']
+
 column_mapping = ColumnMapping(
     prediction='prediction',
     numerical_features=num_features,
@@ -80,10 +96,10 @@ def prep_db():
 @task
 def calculate_metrics_postgresql(curr, i):
     current_data = raw_data
- 
-	#current_data.fillna(0, inplace=True)
-    X = current_data[num_features + cat_features].to_dict(orient='records')
-    current_data['prediction'] = model.predict(dv.transform(X))
+ 	
+  	# current_data.fillna(0, inplace=True)
+    features = current_data[cat_features + num_features].to_dict(orient='records')
+    current_data['prediction'] = model.predict(features)
     
     report.run(reference_data = reference_data, current_data = current_data,
 		column_mapping=column_mapping)
