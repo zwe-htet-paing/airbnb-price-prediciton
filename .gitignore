@@ -1,5 +1,7 @@
 __pycache__
 .ipynb_checkpoints
+.vscode
+.pytest_cache
 
 **/mlruns/
 **/mlruns_artifacts/
