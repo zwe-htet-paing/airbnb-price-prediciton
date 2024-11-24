@@ -15,12 +15,17 @@ def test_base64_decode():
 
     actual_result = model.base64_decode(base64_input)
     expected_result = {
-        "ride": {
-            "PULocationID": 130,
-            "DOLocationID": 205,
-            "trip_distance": 3.66,
+    "input_data": {
+            "room_type": "Entire home/apt",
+            "neighbourhood": "SIXTH WARD",
+            "latitude": 42.65222,
+            "longitude": -73.76724,
+            "minimum_nights": 2,
+            "number_of_reviews": 302,
+            "reviews_per_month": 2.53,
+            "availability_365": 253
         },
-        "ride_id": 256,
+        "input_id": 123
     }
 
     assert actual_result == expected_result
@@ -29,17 +34,28 @@ def test_base64_decode():
 def test_prepare_features():
     model_service = model.ModelService(None)
 
-    ride = {
-        "PULocationID": 130,
-        "DOLocationID": 205,
-        "trip_distance": 3.66,
+    input_data = {
+        "room_type": "Entire home/apt",
+        "neighbourhood": "SIXTH WARD",
+        "latitude": 42.65222,
+        "longitude": -73.76724,
+        "minimum_nights": 2,
+        "number_of_reviews": 302,
+        "reviews_per_month": 2.53,
+        "availability_365": 253
     }
 
-    actual_features = model_service.prepare_features(ride)
+    actual_features = model_service.prepare_features(input_data)
 
     expected_fetures = {
-        "PU_DO": "130_205",
-        "trip_distance": 3.66,
+        "room_type": "Entire home/apt",
+        "neighbourhood": "SIXTH WARD",
+        "latitude": 42.65222,
+        "longitude": -73.76724,
+        "minimum_nights": 2,
+        "number_of_reviews": 302,
+        "reviews_per_month": 2.53,
+        "availability_365": 253
     }
 
     assert actual_features == expected_fetures
@@ -59,8 +75,14 @@ def test_predict():
     model_service = model.ModelService(model_mock)
 
     features = {
-        "PU_DO": "130_205",
-        "trip_distance": 3.66,
+        "room_type": "Entire home/apt",
+        "neighbourhood": "SIXTH WARD",
+        "latitude": 42.65222,
+        "longitude": -73.76724,
+        "minimum_nights": 2,
+        "number_of_reviews": 302,
+        "reviews_per_month": 2.53,
+        "availability_365": 253
     }
 
     actual_prediction = model_service.predict(features)
@@ -90,11 +112,11 @@ def test_lambda_handler():
     expected_predictions = {
         'predictions': [
             {
-                'model': 'ride_duration_prediction_model',
+                'model': 'price_prediction_model',
                 'version': model_version,
                 'prediction': {
-                    'ride_duration': 10.0,
-                    'ride_id': 256,
+                    'price': 10.0,
+                    'input_id': 123
                 },
             }
         ]
