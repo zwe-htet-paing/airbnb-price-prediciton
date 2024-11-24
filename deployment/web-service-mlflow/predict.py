@@ -1,5 +1,4 @@
 import os
-import pickle
 import numpy as np
 
 import mlflow
@@ -10,17 +9,14 @@ TRACKING_URL = "http://127.0.0.1:5000"
 mlflow.set_tracking_uri(TRACKING_URL)
 
 # RUN_ID = os.getenv('RUN_ID')
-RUN_ID = "7b5744464f544451aee4a9308d1971ad"
+RUN_ID = "1936d050006746eeaa60c76db167d18c"
+logged_model = f'runs:/{RUN_ID}/model'
 
-logged_model = f'runs:/{RUN_ID}/models'
-model = mlflow.pyfunc.load_model(logged_model)
-
-with open("preprocessor.b", 'rb') as f_in:
-    dv = pickle.load(f_in)
+# Load model
+model = mlflow.sklearn.load_model(logged_model)
 
 def predict(features):
-    X = dv.transform(features)
-    preds = model.predict(X)
+    preds = model.predict(features)
     result = np.power(10, preds[0])
     
     return float(result)
