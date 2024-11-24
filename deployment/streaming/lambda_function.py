@@ -34,8 +34,6 @@ def predict(features):
     return 100.0
 
 def lambda_handler(event, context):
-    # TODO implement
-
     # print(json.dumps(event))
     predictions_events = []
     for record in event['Records']:
@@ -53,7 +51,7 @@ def lambda_handler(event, context):
         prediciton_event = {
             'model': 'price_prediction_model',
             'version': '1',
-            'predictions': {
+            'prediction': {
                 'price': prediction,
                 'input_id': input_id
             }
