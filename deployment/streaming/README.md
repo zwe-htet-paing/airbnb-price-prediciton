@@ -121,7 +121,7 @@ echo ${RESULT} | jq -r '.Records[0].Data' | base64 --decode
 
 ### Running the test
 ```bash
-export PREDICTIONS_STREAM_NAME="ride_predictions"
+export PREDICTIONS_STREAM_NAME="airbnb_predictions"
 export RUN_ID="e1efc53e9bd149078b0c12aeaa6365df"
 export TEST_RUN="True"
 
