@@ -19,7 +19,7 @@ mlflow.set_tracking_uri(TRACKING_URL)
 print(f"Tracking URI: '{mlflow.get_tracking_uri()}'")
 
 
-RUN_ID = os.getenv('RUN_ID', '7b5744464f544451aee4a9308d1971ad')
+RUN_ID = os.getenv('RUN_ID', '1936d050006746eeaa60c76db167d18c')
 
 def generate_uuids(n):
     ride_ids = []
@@ -66,13 +66,11 @@ def prepare_dictionaries(df: pd.DataFrame):
 
 
 def load_models(run_id):
-    with open('../web-service-mlflow/preprocessor.b', 'rb') as f_in:
-        loaded_dv = pickle.load(f_in)
-    
-    logged_model = f'runs:/{run_id}/models'
-    # Load model as a PyFuncModel.
-    loaded_model = mlflow.pyfunc.load_model(logged_model)
-    return loaded_dv, loaded_model
+    logged_model = f'runs:/{run_id}/model'
+    # loaded_model = mlflow.pyfunc.load_model(logged_model)
+    loaded_model = mlflow.sklearn.load_model(logged_model)
+
+    return loaded_model
 
 
 def save_results(df, y_pred, run_id, output_file):
@@ -103,12 +101,11 @@ def apply_model(input_file, run_id, output_file):
     dicts = prepare_dictionaries(df)
 
     logger.info(f'loading the model with RUN_ID={run_id}...')
-    dv, model = load_models(run_id)
+    model = load_models(run_id)
 
     logger.info(f'applying the model...')
     
-    X = dv.transform(dicts)
-    y_pred = model.predict(X)
+    y_pred = model.predict(dicts)
     y_pred = np.round(np.power(10, y_pred), 2)
 
     logger.info(f'saving the result to {output_file}...')
@@ -153,7 +150,7 @@ def run():
     month = int(sys.argv[3]) # 9
     day = int(sys.argv[4]) # 5
 
-    run_id = sys.argv[5] # '7b5744464f544451aee4a9308d1971ad'
+    run_id = sys.argv[5] # '1936d050006746eeaa60c76db167d18c'
 
     airbnb_price_prediction(
         city=city,
@@ -166,4 +163,4 @@ if __name__ == '__main__':
     run()
     
 # Example Usge:
-# python score.py albany 2024 9 5 7b5744464f544451aee4a9308d1971ad
+# python score.py albany 2024 9 5 1936d050006746eeaa60c76db167d18c
