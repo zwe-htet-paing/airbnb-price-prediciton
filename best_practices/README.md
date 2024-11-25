@@ -56,3 +56,9 @@ If you get 'Unable to locate credentials' error, add these env variables to the 
 
 - AWS_ACCESS_KEY_ID=abc
 - AWS_SECRET_ACCESS_KEY=xyz
+
+
+isort .
+black .
+pylint --recursive=y .
+pytest tests/

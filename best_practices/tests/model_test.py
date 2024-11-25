@@ -15,7 +15,7 @@ def test_base64_decode():
 
     actual_result = model.base64_decode(base64_input)
     expected_result = {
-    "input_data": {
+        "input_data": {
             "room_type": "Entire home/apt",
             "neighbourhood": "SIXTH WARD",
             "latitude": 42.65222,
@@ -23,9 +23,9 @@ def test_base64_decode():
             "minimum_nights": 2,
             "number_of_reviews": 302,
             "reviews_per_month": 2.53,
-            "availability_365": 253
+            "availability_365": 253,
         },
-        "input_id": 123
+        "input_id": 123,
     }
 
     assert actual_result == expected_result
@@ -42,7 +42,7 @@ def test_prepare_features():
         "minimum_nights": 2,
         "number_of_reviews": 302,
         "reviews_per_month": 2.53,
-        "availability_365": 253
+        "availability_365": 253,
     }
 
     actual_features = model_service.prepare_features(input_data)
@@ -55,7 +55,7 @@ def test_prepare_features():
         "minimum_nights": 2,
         "number_of_reviews": 302,
         "reviews_per_month": 2.53,
-        "availability_365": 253
+        "availability_365": 253,
     }
 
     assert actual_features == expected_fetures
@@ -82,7 +82,7 @@ def test_predict():
         "minimum_nights": 2,
         "number_of_reviews": 302,
         "reviews_per_month": 2.53,
-        "availability_365": 253
+        "availability_365": 253,
     }
 
     actual_prediction = model_service.predict(features)
@@ -114,10 +114,7 @@ def test_lambda_handler():
             {
                 'model': 'price_prediction_model',
                 'version': model_version,
-                'prediction': {
-                    'price': 10.0,
-                    'input_id': 123
-                },
+                'prediction': {'price': 10.0, 'input_id': 123},
             }
         ]
     }

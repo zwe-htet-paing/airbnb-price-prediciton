@@ -40,13 +40,13 @@ actual_record = json.loads(records[0]['Data'])
 pprint(actual_record)
 
 expected_record = {
-        'model': 'price_prediction_model',
-        'version': 'Test123',
-        'prediction': {
-            'price': 118.33,
-            'input_id': 123,
-        },
-    }
+    'model': 'price_prediction_model',
+    'version': 'Test123',
+    'prediction': {
+        'price': 118.33,
+        'input_id': 123,
+    },
+}
 
 
 diff = DeepDiff(actual_record, expected_record, significant_digits=1)

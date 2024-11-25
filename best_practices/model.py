@@ -1,10 +1,11 @@
 import os
 import json
-import boto3
 import base64
 
-import mlflow
+import boto3
 import numpy as np
+import mlflow
+
 
 def get_model_location(run_id):
     model_location = os.getenv('MODEL_LOCATION')
@@ -19,6 +20,7 @@ def get_model_location(run_id):
     model_location = f'runs:/{run_id}/model'
     return model_location
 
+
 def load_model(run_id):
     model_path = get_model_location(run_id)
     # model = mlflow.pyfunc.load_model(model_path)
@@ -32,13 +34,14 @@ def base64_decode(encoded_data):
     airbnb_event = json.loads(decoded_data)
     return airbnb_event
 
+
 class ModelService:
     def __init__(self, model, model_version=None, callbacks=None):
         self.model = model
         self.model_version = model_version
         self.callbacks = callbacks or []
 
-    def prepare_features(self,input_data):
+    def prepare_features(self, input_data):
         features = {}
         features['room_type'] = input_data['room_type']
         features['neighbourhood'] = input_data['neighbourhood']
@@ -58,7 +61,7 @@ class ModelService:
         # return 10.0
 
     def lambda_handler(self, event):
-    
+
         # print(json.dumps(event))
         predictions_events = []
         for record in event['Records']:
@@ -74,21 +77,16 @@ class ModelService:
             prediction_event = {
                 'model': 'price_prediction_model',
                 'version': self.model_version,
-                'prediction': {
-                    'price': prediction,
-                    'input_id': input_id
-                }
+                'prediction': {'price': prediction, 'input_id': input_id},
             }
-            
+
             for callback in self.callbacks:
                 callback(prediction_event)
 
             predictions_events.append(prediction_event)
 
-        return {
-            'predictions': predictions_events
-        }
-        
+        return {'predictions': predictions_events}
+
 
 class KinesisCallback:
     def __init__(self, kinesis_client, prediction_stream_name):
@@ -103,6 +101,7 @@ class KinesisCallback:
             Data=json.dumps(prediction_event),
             PartitionKey=str(input_id),
         )
+
 
 def create_kinesis_client():
     endpoint_url = os.getenv('KINESIS_ENDPOINT_URL')
