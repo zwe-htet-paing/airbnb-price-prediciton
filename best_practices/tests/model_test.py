@@ -71,7 +71,7 @@ class ModelMock:
 
 
 def test_predict():
-    model_mock = ModelMock(10.0)
+    model_mock = ModelMock(1.0)
     model_service = model.ModelService(model_mock)
 
     features = {
@@ -92,7 +92,7 @@ def test_predict():
 
 
 def test_lambda_handler():
-    model_mock = ModelMock(10.0)
+    model_mock = ModelMock(1.0)
     model_version = 'Test123'
     model_service = model.ModelService(model_mock, model_version)
 

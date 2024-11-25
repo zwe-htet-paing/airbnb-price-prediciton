@@ -4,6 +4,7 @@ import boto3
 import base64
 
 import mlflow
+import numpy as np
 
 def get_model_location(run_id):
     model_location = os.getenv('MODEL_LOCATION')
@@ -11,16 +12,18 @@ def get_model_location(run_id):
     if model_location is not None:
         return model_location
 
-    model_bucket = os.getenv('MODEL_BUCKET', 'mlflow-models-alexey')
-    experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '1')
+    # model_bucket = os.getenv('MODEL_BUCKET', 'mlflow-models-alexey')
+    # experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '1')
 
-    model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/model'
+    # model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/model'
+    model_location = f'runs:/{run_id}/model'
     return model_location
 
 def load_model(run_id):
-    # model_path = get_model_location(run_id)
-    model_path = f'runs:/{run_id}/model'
-    model = mlflow.pyfunc.load_model(model_path)
+    model_path = get_model_location(run_id)
+    # model = mlflow.pyfunc.load_model(model_path)
+    model = mlflow.sklearn.load_model(model_path)
+
     return model
 
 
@@ -50,9 +53,10 @@ class ModelService:
 
     def predict(self, features):
         pred = self.model.predict(features)
-        return float(pred[0])
+        result = np.power(10, pred[0])
+        return float(f"{result:.2f}")
+        # return 10.0
 
-    
     def lambda_handler(self, event):
     
         # print(json.dumps(event))
@@ -111,6 +115,7 @@ def create_kinesis_client():
 
 def init(prediction_stream_name: str, run_id: str, test_run: bool):
     model = load_model(run_id)
+    # model = None
 
     callbacks = []
 
