@@ -58,7 +58,26 @@ If you get 'Unable to locate credentials' error, add these env variables to the 
 - AWS_SECRET_ACCESS_KEY=xyz
 
 
+### Make
+
+Without make:
+
+```bash
 isort .
 black .
 pylint --recursive=y .
 pytest tests/
+```
+
+With make:
+
+```bash
+make quality_checks
+make test
+```
+
+To prepare the project, run
+
+```bash
+make setup
+```
