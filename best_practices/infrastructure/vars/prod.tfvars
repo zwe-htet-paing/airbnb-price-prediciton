@@ -1,0 +1,7 @@
+source_stream_name = "prod_airbnb_events"
+output_stream_name = "prod_airbnb_predictions"
+model_bucket = "prod-mlflow-models-code-owners"
+lambda_function_local_path = "../lambda_function.py"
+docker_image_local_path = "../Dockerfile"
+ecr_repo_name = "prod_stream_model_airbnb"
+lambda_function_name = "prod_prediction_lambda"
